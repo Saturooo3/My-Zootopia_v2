@@ -1,11 +1,16 @@
 import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+API_KEY = os.getenv('API_KEY')
 
 
-API_KEY = "V91oA1MxaTuaFB9nzObLhg==v7INuvzcMhLn6D82"
-
-
-def load_data(name):
-    api_url = f'https://api.api-ninjas.com/v1/animals?name={name}'
+def load_data(animal_name: str):
+    """
+    gets a name of an animal and return the json file of its data
+    """
+    api_url = f'https://api.api-ninjas.com/v1/animals?name={animal_name}'
     response = requests.get(api_url, headers={'X-Api-Key': API_KEY})
     if response.status_code == requests.codes.ok:
         return response.json()
@@ -13,7 +18,11 @@ def load_data(name):
         print("Error:", response.status_code, response.text)
 
 
-def serialize_data(animal):
+def serialize_data(animal: dict) -> str:
+    """
+    gets a dictionary of an animal with its data and
+    returns a string with its data formatted
+    """
     output = ""
     output += "<li class='cards__item'>"
 
@@ -29,10 +38,11 @@ def serialize_data(animal):
     output += "</p>\n</li>\n"
     return output
 
+
 def listed_data(animal, animals_data: list) -> str:
     """
-    takes a list of animals data and return a str with name, diet,
-    locations and type of animal for html
+    gets a list of animals data and returns the animals a str with name, diet,
+    locations and type of animal for html if the list is not empty
     """
     output = ""
     if len(animals_data) == 0:
